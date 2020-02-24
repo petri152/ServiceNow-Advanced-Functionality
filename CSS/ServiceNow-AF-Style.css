@@ -1,0 +1,66 @@
+@-moz-document url("https://iaas.service-now.com/login_locate_sso.do") {
+table tbody tr:last-of-type > td {
+    display: none;
+}
+div#page_timing_div {
+    display: none;
+}
+#loginPage table{
+    margin: 0 auto;
+}
+#newLogoDiv{
+    background-image: url('6669f0ac0f05a200fd92ed1be1050ea0.iix');
+    height: 50px;
+    width: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-bottom: 5px;
+}
+}
+
+@-moz-document domain("support.compucom.com") {
+#txtDescription{
+    height: 425px !important;
+}
+#inc_leftnav_savedFilters{
+    display: block !important;
+}
+#myincidents_all, #myincidents, #myincidents_completed, #mygroupincidents, #mygroupincidents_unassigned, #inc_leftnav_saveCurrentFilter{
+    display: none !important;
+}
+#inc_liSavedFilters>span{
+    display: none;
+}
+span[title="Delete this filter."]{
+    display: none;
+}
+#inc_leftnav_savedFilters>li{
+    padding-left: 25px !important;
+    margin-right: -25px !important;
+}
+#inc_leftnav_savedFilters>li>table:hover{
+    background: #f35800 !important;
+    background-color: #f35800 !important;
+}
+#inc_leftnav_savedFilters>li>table.selected{
+    background: #f35800 !important;
+    background-color: #f35800 !important;
+}
+#inc_leftnav_savedFilters>li>table{
+    margin-left: -25px;
+    padding-left: 25px;
+}
+#search_filter_title{
+    font-size: 16px;
+    padding: 0 10px 0 10px;   
+}
+#divSearchFilter>table>tbody>tr>td:first-child{
+    display: none;
+}
+#filterButtons, #btnAddFilter{
+    display: none;
+}
+#refreshMinutes{
+    width: 30px;
+}
+}
