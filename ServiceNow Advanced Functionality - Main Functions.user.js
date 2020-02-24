@@ -51,7 +51,6 @@
         ccLogo.id = "newLogoDiv";
         var reference = document.getElementById('loginPage').firstChild.firstChild.firstChild.firstChild;
         reference.appendChild(ccLogo);
-        console.log('fired');
     }
 
     //Redirects for various CompuCom landing pages
@@ -112,8 +111,8 @@ function ticketCount(){
         var groupUnassigned = document.getElementById('mygroupincidents_unassigned').firstChild.firstElementChild.innerText;
         groupUnassigned = groupUnassigned.slice(0, -1);
         document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'My Open Tickets ('+myTickets+')';
-        document.getElementById('Canada Field Services Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Tickets ('+groupTickets+')';
-        document.getElementById('Canada Field Services Unassigned').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Unassigned ('+groupUnassigned+')';
+        //document.getElementById('Canada Field Services Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Tickets ('+groupTickets+')';
+        //document.getElementById('Canada Field Services Unassigned').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Unassigned ('+groupUnassigned+')';
         for(var i = 0; i < document.getElementById('inc_liSavedFilters').getElementsByClassName('k-link').length; i++) {
             document.getElementById('inc_liSavedFilters').getElementsByClassName('k-link')[i].addEventListener("click", selectFilter());
         }
@@ -121,6 +120,16 @@ function ticketCount(){
         var evt1 = document.createEvent("MouseEvents");
         evt1.initEvent("click", true, true);
         document.getElementById('My Open Tickets').dispatchEvent(evt1);
+        unsafeWindow.teamName = null;
+        $('li[id*="@G"]').each(function(){
+            $(this).html($(this).html().replace("@G", ""));
+            var teamID = $(this).attr("id");
+            teamID = teamID.substring(2, teamID.length);
+            unsafeWindow.teamName = teamID;
+            $(this).attr("id",teamID);
+        });
+        document.getElementById(unsafeWindow.teamName).firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Tickets ('+groupTickets+')';
+        document.getElementById('@U').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Unassigned ('+groupUnassigned+')';
         $('li[id*="@T"]').appendTo($('#inc_leftnav_savedFilters.leftnavSavedTeam'));
         $('li[id*="@T"]').each(function(){
             $(this).html($(this).html().replace("@T", ""));
@@ -214,10 +223,10 @@ function refresh(){
         data: teamticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         error: function(){
-            document.getElementById('Canada Field Services Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Tickets (Err.)';
+            document.getElementById(unsafeWindow.teamName).firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Tickets (Err.)';
         },
         success: function(data){
-            document.getElementById('Canada Field Services Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Tickets ('+data.d.Data.Count+')';
+            document.getElementById(unsafeWindow.teamName).firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Tickets ('+data.d.Data.Count+')';
         }
     });
     var teamunassignedrequestbody = "{\"forWhom\":\"mygroup_unassigneditems\",\"page\":\"incident\"}";
@@ -228,10 +237,10 @@ function refresh(){
         data: teamunassignedrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         error: function(){
-            document.getElementById('Canada Field Services Unassigned').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Unassigned (Err.)';
+            document.getElementById('@U').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Unassigned (Err.)';
         },
         success: function(data){
-            document.getElementById('Canada Field Services Unassigned').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'Canada Field Services Unassigned ('+data.d.Data.Count+')';
+            document.getElementById('@U').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Unassigned ('+data.d.Data.Count+')';
         }
     });
     $('.leftnavSavedTeam .k-link').each(function(){
