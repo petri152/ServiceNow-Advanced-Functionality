@@ -5,9 +5,10 @@ Installing this:
 So you're going to need a plugin/add-on/extension called Tampermonkey (if you run Firefox you're going to use Greasemonkey). This can be obtained from here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
 
 1. Install Tampermonkey
-2. Click here.
+2. Click [here](https://github.com/petri152/ServiceNow-Advanced-Functionality/raw/master/ServiceNow%20Advanced%20Functionality%20-%20Main%20Functions.user.js "here").
 3. Confirm installation.
-4. Done.
+4. Install the stylesheet from the /CSS/ folder.
+5. Done.
 
 # Prerequisites.
 
