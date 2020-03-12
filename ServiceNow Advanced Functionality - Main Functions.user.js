@@ -70,37 +70,29 @@ function thirtyDay(){
     //The next 4 lines are just because the id "30 Day+" has a plus sign in it and jQuery has a stroke with selectors that contain special characters. Beautiful pure Javascript.
     var parentNode = document.getElementById("30\ Day\+").querySelectorAll("td:first-child")[0];
     var newNode = document.createElement('span');
-    newNode.innerHTML = '0';
+    newNode.innerHTML = '(0)';
     newNode.className = 'totals';
     var referenceNode = document.getElementById("30\ Day\+").querySelectorAll(".filtersetting")[0];
     parentNode.insertBefore(newNode, referenceNode);
     //This code could easily be its own function but I'm too lazy to fight with Userscript scopes.
-    var body = "{\"take\":0,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
+    var body = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        async: false,
+        async: true,
         data: body,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
         error: function(){
-            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "0";
+            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "(0)";
         },
-        success: function(){
-            var countData = $.ajax({
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                async: false,
-                data: "{ forWhom: \"incident\" }",
-                url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentAggregateCount"
-            }).responseText;
-            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = '('+JSON.parse(countData).d.Data.Count+')';
+        success: function(data){
+            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = '('+data.d.Data.TotalCount+')';
         }
     });
 }
 
 function ticketCount(){
     if (!document.getElementById('My Open Tickets')) {
-        console.log("nope!");
         setTimeout(ticketCount, 10);
     } else {
         var $ = unsafeWindow.jQuery;
@@ -140,25 +132,18 @@ function ticketCount(){
         });
         $('.leftnavSavedTeam .k-link').each(function(){
             var member = $(this).attr("id");
-            var body = "{\"take\":0,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"field\":\"listtype\",\"operator\":\"=\",\"value\":\"myincidents_all\"},{\"filters\":[{\"field\":\"assigned_to\",\"operator\":\"eq\",\"value\":\""+ member +"\"}]},{\"filters\":[{\"field\":\"incident_state\",\"operator\":\"NOT IN\",\"value\":\"6,7\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^\"}";
+            var body = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"field\":\"listtype\",\"operator\":\"=\",\"value\":\"myincidents_all\"},{\"filters\":[{\"field\":\"assigned_to\",\"operator\":\"eq\",\"value\":\""+ member +"\"}]},{\"filters\":[{\"field\":\"incident_state\",\"operator\":\"NOT IN\",\"value\":\"6,7\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^\"}";
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
-                async: false,
+                async: true,
                 data: body,
                 url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
                 error: function(){
                     $(this).find('.totals').innerHTML = "0";
                 },
-                success: function(){
-                    var countData = $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        async: false,
-                        data: "{ forWhom: \"incident\" }",
-                        url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentAggregateCount"
-                    }).responseText;
-                    document.getElementById(member).getElementsByClassName("totals")[0].textContent = JSON.parse(countData).d.Data.Count;
+                success: function(data){
+                    document.getElementById(member).getElementsByClassName("totals")[0].textContent = data.d.Data.TotalCount;
                 }
             });
         });
@@ -180,32 +165,25 @@ function showFilters(){
 function refresh(){
     var $ = unsafeWindow.jQuery;
 
-    var thirtydayrequestbody = "{\"take\":0,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
+    var thirtydayrequestbody = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        async: false,
+        async: true,
         data: thirtydayrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
         error: function(){
-            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "0";
+            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "(Err.)";
         },
-        success: function(){
-            var countData = $.ajax({
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                async: false,
-                data: "{ forWhom: \"incident\" }",
-                url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentAggregateCount"
-            }).responseText;
-            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = '('+JSON.parse(countData).d.Data.Count+')';
+        success: function(data){
+            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = '('+data.d.Data.TotalCount+')';
         }
     });
     var openticketsrequestbody = "{\"forWhom\":\"myitems\",\"page\":\"incident\"}";
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        async: false,
+        async: true,
         data: openticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         error: function(){
@@ -219,7 +197,7 @@ function refresh(){
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        async: false,
+        async: true,
         data: teamticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         error: function(){
@@ -233,7 +211,7 @@ function refresh(){
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        async: false,
+        async: true,
         data: teamunassignedrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         error: function(){
@@ -245,25 +223,18 @@ function refresh(){
     });
     $('.leftnavSavedTeam .k-link').each(function(){
         var member = $(this).attr("id");
-        var body = "{\"take\":0,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"field\":\"listtype\",\"operator\":\"=\",\"value\":\"myincidents_all\"},{\"filters\":[{\"field\":\"assigned_to\",\"operator\":\"eq\",\"value\":\""+ member +"\"}]},{\"filters\":[{\"field\":\"incident_state\",\"operator\":\"NOT IN\",\"value\":\"6,7\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^\"}";
+        var body = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"field\":\"listtype\",\"operator\":\"=\",\"value\":\"myincidents_all\"},{\"filters\":[{\"field\":\"assigned_to\",\"operator\":\"eq\",\"value\":\""+ member +"\"}]},{\"filters\":[{\"field\":\"incident_state\",\"operator\":\"NOT IN\",\"value\":\"6,7\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^\"}";
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            async: false,
+            async: true,
             data: body,
             url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
             error: function(){
                 $(this).find('.totals').innerHTML = "0";
             },
-            success: function(){
-                var countData = $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    async: false,
-                    data: "{ forWhom: \"incident\" }",
-                    url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentAggregateCount"
-                }).responseText;
-                document.getElementById(member).getElementsByClassName("totals")[0].textContent = JSON.parse(countData).d.Data.Count;
+            success: function(data){
+                document.getElementById(member).getElementsByClassName("totals")[0].textContent = data.d.Data.TotalCount;
             }
         });
     });
@@ -307,6 +278,10 @@ function selectFilter() {
     if(document.getElementById('search_filter_title').textContent.slice(0, -1) != 'Filters'){
     	var currentFilter = document.getElementById('search_filter_title').textContent.slice(0, -1)
       document.getElementById(currentFilter).firstElementChild.classList.add('selected');
+    }else if (document.getElementById('search_filter_title').textContent.slice(0, -1) == '@U'){
+        document.getElementById(currentFilter).firstElementChild.classList.add('selected');
+        document.getElementById('search_filter_title').textContent = currentFilter;
+        var currentFilter = unsafeWindow.teamName+' Unassigned';
     }
   };
 }
