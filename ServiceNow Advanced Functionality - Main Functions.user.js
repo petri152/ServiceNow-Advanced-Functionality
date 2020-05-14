@@ -172,6 +172,9 @@ function refresh(){
         async: true,
         data: thirtydayrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
+        beforeSend: function(){
+            document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "(Updating...)";
+        },
         error: function(){
             document.getElementById("30 Day+").getElementsByClassName("totals")[0].textContent = "(Err.)";
         },
@@ -186,6 +189,9 @@ function refresh(){
         async: true,
         data: openticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
+        beforeSend: function(){
+            document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = "(Updating...)";
+        },
         error: function(){
             document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'My Open Tickets (Err.)';
         },
@@ -200,6 +206,9 @@ function refresh(){
         async: true,
         data: teamticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
+        beforeSend: function(){
+            document.getElementById(unsafeWindow.teamName).firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Tickets (Updating...)';
+        },
         error: function(){
             document.getElementById(unsafeWindow.teamName).firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Tickets (Err.)';
         },
@@ -214,6 +223,9 @@ function refresh(){
         async: true,
         data: teamunassignedrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
+        beforeSend: function(){
+            document.getElementById('@U').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Unassigned (Updating...)';
+        },
         error: function(){
             document.getElementById('@U').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = unsafeWindow.teamName+' Unassigned (Err.)';
         },
@@ -230,6 +242,9 @@ function refresh(){
             async: true,
             data: body,
             url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getIncidentLite_SaveLastAppliedFilters",
+            beforeSend: function(){
+                document.getElementById(member).getElementsByClassName("totals")[0].textContent = 'Updating...';
+            },
             error: function(){
                 $(this).find('.totals').innerHTML = "0";
             },
