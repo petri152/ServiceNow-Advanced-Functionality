@@ -190,7 +190,7 @@ function refresh(){
         data: openticketsrequestbody,
         url: "https://support.compucom.com/Incidents/WebMethods/IncidentWS.asmx/getItemsCount",
         beforeSend: function(){
-            document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = "(Updating...)";
+            document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = "My Open Tickets (Updating...)";
         },
         error: function(){
             document.getElementById('My Open Tickets').firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstChild.data = 'My Open Tickets (Err.)';
