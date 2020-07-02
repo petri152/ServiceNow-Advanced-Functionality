@@ -2,7 +2,7 @@
 A userscript and stylesheet to make ServiceNow less crap.
 
 Installing this:
-So you're going to need a plugin/add-on/extension called Tampermonkey (if you run Firefox you're going to use Greasemonkey). This can be obtained from here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
+So you're going to need a plugin/add-on/extension called Tampermonkey (~~if you run Firefox you're going to use Greasemonkey~~ Firefox is not supported, use Chrome or a Chromium-based browser [\[such as the new Edge\]](http://microsoft.com/edge)). This can be obtained from here: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
 
 1. Install Tampermonkey
 2. Click [here](https://github.com/petri152/ServiceNow-Advanced-Functionality/raw/master/ServiceNow%20Advanced%20Functionality%20-%20Main%20Functions.user.js "here").
