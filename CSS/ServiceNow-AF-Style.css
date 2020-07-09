@@ -64,3 +64,15 @@ span[title="Delete this filter."]{
     width: 30px;
 }
 }
+
+@-moz-document url-prefix("https://support.compucom.com/Incidents/IncidentsDetails.aspx") {
+#divLeftNav{
+    display: none !important;
+}
+form[name=aspnetForm]>table>tbody>tr>td:first-child{
+    display: none;
+}
+#ctl00__mainContentPlaceHolder_updFullDetails{
+    width: unset !important;
+}
+}
