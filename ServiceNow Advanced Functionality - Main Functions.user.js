@@ -54,14 +54,15 @@
     }
 
     //Redirects for various CompuCom landing pages
-    if(document.location.pathname.toLowerCase() == "/common/sute/signin.aspx"){
+    if(document.location.pathname.toLowerCase() == "/common/site/signin.aspx"){
         setTimeout(function(){
             window.location.replace("https://iaas.service-now.com/login_locate_sso.do");
         },5);
     }
-    if(document.location.pathname.toLowerCase() == "/nav_to.do"){
+    //Redirect main CompuCom landing page to Resolver Portal.
+    if(document.location.pathname.toLowerCase() == "/navpage.do"){
         setTimeout(function(){
-            window.location.replace("https://iaas.service-now.com/login_locate_sso.do");
+            window.location.replace("https://iaas.service-now.com/sourceSSO_nav.do");
         },5);
     }
 })();
