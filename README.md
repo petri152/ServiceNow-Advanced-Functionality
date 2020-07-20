@@ -38,7 +38,7 @@ Save this filter as "@T\[Team Member Name\]" (note the @T! this is very importan
 ![filter3](https://github.com/petri152/ServiceNow-Advanced-Functionality/raw/master/screenshots/filters3.png "Filter3")  
 Active: is true  
 Assignment Group: is \[Your Team Name\]  
-Infident State: is not one of Resovled, or Closed  
+Incident State: is not one of Resovled, or Closed  
 Assigned To: is empty  
 Save this filter as "@U"
 
