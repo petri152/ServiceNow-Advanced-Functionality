@@ -18,6 +18,7 @@
         evt0.initEvent("click", true, true);
         document.getElementById('inc_liSavedFilters').dispatchEvent(evt0);
         $('#panelbar-leftnav').append('<li id="liMyTeam" class="k-item k-state-default" role="menuitem"><span class="k-link k-header">My Team</span><ul id="inc_leftnav_savedFilters" class="leftnavSavedFilters leftnavSavedTeam k-group k-panel" role="group"></li>')
+        $('#panelbar-leftnav').append('<li id="liOpenTix" class="k-item k-state-default" role=menuitem"><span class="k-link k-header" onclick="window.open(\'https://iaas.service-now.com/incident.do?sys_id=-1&sysparm_query=active=true&sysparm_stack=incident_list.do?sysparm_query=caller_id=javascript:gs.getUserID()^ORsys_created_by=javascript:gs.getUserID()^active=true&sysparm_view=ess\', \'_blank\', \'location=yes\')">Submit a Ticket</span>')
         //}, 10);
         $("#linkSingleSearch").off("click");
         document.getElementById("linkSingleSearch").addEventListener("click", function(){
@@ -30,7 +31,7 @@
                 searchModif();
             }
         });
-        unsafeWindow.jQuery('#incident_grid>.k-grid-content>.k-selectable>tbody>tr>td[role="gridcell"]>a').attr('onClick','window.open(this.href, "_blank", "location=yes");return false;');
+        //unsafeWindow.jQuery('#incident_grid>.k-grid-content>.k-selectable>tbody>tr>td[role="gridcell"]>a').attr('onClick','window.open(this.href, "_blank", "location=yes");return false;');
         document.getElementById('lnkResolver').innerHTML = "CompuCom Resolver Portal by Petri Trebilcock";
         document.getElementById('search_filter_title').parentElement.innerHTML += "<input type=\"button\" style=\"display: none; margin-right: 10px;\" name=\"addFilterButton\" value=\"Add Filter\" onclick=\"$('#addFilterWindow').data('kendoWindow').open();\" id=\"addFilterButton\" class=\"k-button\"><input type=\"button\" name=\"showFilterButton\" value=\"Show Filters\" onclick=\"showFilters();\" id=\"showFilterButton\" class=\"k-button\"><input type=\"button\" style=\"margin-left: 5px;\" name=\"refreshButton\" value=\"Refresh\" onclick=\"refresh();\" id=\"refreshButton\" class=\"k-button\"><input id=\"enableRefresh\" type=\"checkbox\"><label for=\"enableRefresh\">Auto-refresh values every </label><input id=\"refreshMinutes\" type=\"number\" min=\"3\" value=\"5\"><label for=\"refreshMinutes\"> minutes.</label> <input type=\"button\" onclick=\"startRefreshTimer();\" value=\"Submit\">";
         ticketCount();
@@ -44,6 +45,11 @@
         unsafeWindow.searchModif = exportFunction (searchModif, unsafeWindow);
         unsafeWindow.startRefreshTimer = exportFunction (startRefreshTimer, unsafeWindow);
         unsafeWindow.refreshTimer = 0;
+        document.getElementById('inc_leftnav_savedFilters').addEventListener("click", function(){
+            if(document.getElementById('search_filter_title').innerHTML == "@U:"){
+                document.getElementById('search_filter_title').innerHTML = unsafeWindow.teamName + " Unassigned:"
+            }
+        });
     }
 
     if(document.location.pathname.toLowerCase() == "/login_locate_sso.do"){
@@ -75,8 +81,25 @@ function thirtyDay(){
     newNode.className = 'totals';
     var referenceNode = document.getElementById("30\ Day\+").querySelectorAll(".filtersetting")[0];
     parentNode.insertBefore(newNode, referenceNode);
+    //thank you StackExchange
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    };
+    unsafeWindow.userName = getUrlParameter('FirstName') +" "+ getUrlParameter('LastName')
     //This code could easily be its own function but I'm too lazy to fight with Userscript scopes.
-    var body = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
+    var body = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\""+unsafeWindow.userName+"\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -166,7 +189,7 @@ function showFilters(){
 function refresh(){
     var $ = unsafeWindow.jQuery;
 
-    var thirtydayrequestbody = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\"Petri Trebilcock\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
+    var thirtydayrequestbody = "{\"take\":150,\"skip\":0,\"page\":1,\"pageSize\":0,\"sort\":[{\"field\":\"number\",\"dir\":\"asc\"}],\"filter\":{\"logic\":\"and\",\"filters\":[{\"logic\":null,\"field\":\"listtype\",\"value\":\"myincidents_all\",\"operator\":\"=\",\"FilterType\":{\"_type\":0}},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"assigned_to\",\"value\":\""+unsafeWindow.userName+"\",\"operator\":\"eq\",\"FilterType\":{\"_type\":0}}]},{\"logic\":null,\"field\":null,\"value\":null,\"operator\":null,\"FilterType\":{\"_type\":0},\"filters\":[{\"logic\":null,\"field\":\"incident_state\",\"value\":\"6,7\",\"operator\":\"NOT IN\",\"FilterType\":{\"_type\":0}}]},{\"filters\":[{\"field\":\"sys_created_on\",\"operator\":\"lt\",\"value\":\"javascript:gs.daysAgoStart(30)\"}]}]},\"choiceListSelections\":\"incident_state:Resolved, Closed^sys_created_on:Last 30 days^\"}";
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
