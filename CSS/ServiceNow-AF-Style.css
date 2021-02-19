@@ -76,3 +76,10 @@ form[name=aspnetForm]>table>tbody>tr>td:first-child{
     width: unset !important;
 }
 }
+
+@-moz-document url-prefix("https://iaas.service-now.com/incident.do") {
+#element\.incident\.caller_id .input-group-btn{
+    display: table-cell;
+}
+
+}
